@@ -1,4 +1,3 @@
 # youyin-ecshop
-ecshop一些改进
 
-    ecshop可替换自带的类库，包括数据库、日志、缓存、错误处理、hashids、定长纯数字串等，app原目录名是ECMobile，目前的改进思路是在整个站使用mysqlidb代替原有的db，下一步是改进参数获取，可能会引入一个简化版本的request。
+    这个项目的目的在于以温和的方式慢慢改进ecshop，目前加入了mysqlidb代替自带的db（可共存）、cls_cache（redis封装类，简化自TP5）、cls_log（日志类，简化自TP5）、error（app/library下，错误处理）、hashids、SequenceNumber等，下一步是改进参数获取，可能会引入一个简化版本的request。
