@@ -1,15 +1,14 @@
 <?php
 class cache
 {
-    // 多进程下面不能用单例模式
     protected static $instance;
 
     public static $readTimes   = 0;
 
     public static $writeTimes  = 0;
+
     /**
      * 获取实例
-     * 
      * @return void
      * @author seatle <seatle@foxmail.com> 
      * @created time :2016-04-10 22:55
@@ -40,11 +39,6 @@ class cache
                     return null;
                 }
             }
-
-            // 不序列化的话不能存数组，用php的序列化方式其他语言又不能读取，所以这里自己用json序列化了，性能还比php的序列化好1.4倍
-            //self::$instance->setOption(Redis::OPT_SERIALIZER, Redis::SERIALIZER_NONE);     // don't serialize data
-            //self::$instance->setOption(Redis::OPT_SERIALIZER, Redis::SERIALIZER_PHP);      // use built-in serialize/unserialize
-            //self::$instance->setOption(Redis::OPT_SERIALIZER, Redis::SERIALIZER_IGBINARY); // use igBinary serialize/unserialize
 
             self::$instance->setOption(Redis::OPT_PREFIX, $GLOBALS['config_redis']['prefix'] . ":");
         }
@@ -144,18 +138,7 @@ class cache
     /**
      * 删除缓存
      * @access public
-     * @param string $name 缓存变量名
-     * @return boolean
-     */
-    public static function rm($name)
-    {
-        return self::init()->delete($name);
-    }
-
-    /**
-     * 删除缓存
-     * @access public
-     * @param string $name 缓存变量名
+     * @param string|array $name 缓存变量名|缓存变量名数组
      * @return boolean
      */
     public static function del($name)
@@ -172,5 +155,14 @@ class cache
     public static function clear()
     {
         return self::init()->flushDB();
+    }
+
+    /**
+     * 获取指定前缀的所有key
+     * @param  string $pattern [description]
+     * @return [type]          [description]
+     */
+    public static function keys($pattern = '*'){
+        return self::init()->keys($pattern);
     }
 }
