@@ -18,7 +18,7 @@ class Error{
      */
     public static function appException($e){
     	self::report($e);
-    	GZ_Api::outPut(-1, null, '系统错误：'.$e->getCode());
+    	GZ_Api::outPut(-1, null, '系统错误：'.($e instanceof Exception ? $e->getCode() : '未知'));
     }
     /**
      * Error Handler
@@ -54,17 +54,21 @@ class Error{
     public static function report(Exception $exception)
     {
         // 收集异常数据
-        $data = array(
-            'file'    => $exception->getFile(),
-            'line'    => $exception->getLine(),
-            'message' => $exception->getMessage(),
-            'code'    => $exception->getCode(),
-        );
-        $log = "[{$data['code']}]{$data['message']}[{$data['file']}:{$data['line']}]";
-        if(substr($data['file'], -12) == 'MysqliDb.php'){
-            $log .= '[last sql:'.$GLOBALS['dbi']->getLastQuery().']';
+        if($exception instanceof Exception){
+            $data = array(
+                'file'    => $exception->getFile(),
+                'line'    => $exception->getLine(),
+                'message' => $exception->getMessage(),
+                'code'    => $exception->getCode(),
+            );
+            $log = "[{$data['code']}]{$data['message']}[{$data['file']}:{$data['line']}]";
+            if(substr($data['file'], -12) == 'MysqliDb.php'){
+                $log .= '[last sql:'.$GLOBALS['dbi']->getLastQuery().']';
+            }
+            log::write($log, 'app');
+        } else {
+            log::write($exception, 'app');
         }
-        log::write($log, 'app');
     }
 
     /**
