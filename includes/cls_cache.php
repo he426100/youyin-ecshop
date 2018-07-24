@@ -90,17 +90,17 @@ class cache
      * @access public
      * @param string    $name 缓存变量名
      * @param mixed     $value  存储数据
-     * @param integer|array   $expire  有效时间（秒）
+     * @param integer|array   $expire 有效时间（秒） Array('nx', 'ex'=>10)
      * @return boolean
      */
     public static function set($name, $value, $expire = null)
     {
-        if (is_null($expire)) {
-            $expire = 0;
-        }
         $key = $name;
         //对数组/对象数据进行缓存处理，保证数据完整性  byron sampson<xiaobo.sun@qq.com>
         $value = (is_object($value) || is_array($value)) ? json_encode($value) : $value;
+        if (is_null($expire)) {
+            return self::init()->set($key, $value);
+        }
         return self::init()->set($key, $value, $expire);
     }
 
